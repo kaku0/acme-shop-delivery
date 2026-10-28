@@ -14,7 +14,7 @@ components:
       x-amazon-events-detail-type: DeliveryCompleted
       description: Event emitted when an order has been delivered
       allOf:
-        - $ref: "../../shared/resources/schemas.yaml#/EventBridgeHeader"
+        - $ref: "https://raw.githubusercontent.com/kaku0/acme-shop-ecom-lib/main/resources/schemas.yaml#/EventBridgeHeader"
         - type: object
           properties:
             detail:
@@ -28,7 +28,7 @@ components:
                   description: Identifier for the order relative to the package
                   example: b2d0c356-f92b-4629-a87f-786331c2842f
                 address:
-                  $ref: "../../shared/resources/schemas.yaml#/Address"
+                  $ref: "https://raw.githubusercontent.com/kaku0/acme-shop-ecom-lib/main/resources/schemas.yaml#/Address"
             
     DeliveryFailed:
       x-amazon-event-source: ecommerce.delivery
@@ -36,7 +36,7 @@ components:
       description: |
         Event emitted when the delivery service failed to deliver an order.
       allOf:
-        - $ref: "../../shared/resources/schemas.yaml#/EventBridgeHeader"
+        - $ref: "https://raw.githubusercontent.com/kaku0/acme-shop-ecom-lib/main/resources/schemas.yaml#/EventBridgeHeader"
         - type: object
           properties:
             detail:
@@ -50,4 +50,4 @@ components:
                   description: Identifier for the order relative to the packaging request
                   example: b2d0c356-f92b-4629-a87f-786331c2842f
                 address:
-                  $ref: "../../shared/resources/schemas.yaml#/Address"
+                  $ref: "https://raw.githubusercontent.com/kaku0/acme-shop-ecom-lib/main/resources/schemas.yaml#/Address"

@@ -1,0 +1,97 @@
+# Backstage catalog for this repository. Shared entries (groups, systems) are identical in every ACME Shop repo.
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: delivery
+  title: Delivery
+  description: Tracks parcels from dispatch to the customer's door and reports completed or failed deliveries.
+  tags:
+  - python
+  - aws-lambda
+  - dynamodb
+  annotations:
+    github.com/project-slug: kaku0/acme-shop-delivery
+    stackrails.io/hosts: delivery.api.acme-shop.example
+  links:
+  - url: https://github.com/kaku0/acme-shop-delivery
+    title: Source
+spec:
+  type: service
+  lifecycle: production
+  owner: group:fulfilment-team
+  system: fulfilment
+  consumesApis:
+  - orders-api
+  dependsOn:
+  - component:orders
+  - component:platform
+  - component:ecom-lib
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: fulfilment
+  description: Getting orders from the warehouse to the customer's door.
+spec:
+  owner: group:fulfilment-team
+  domain: operations
+  type: business
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: acme-group
+  description: 'ACME Retail Group: online and in-store retail.'
+spec:
+  type: root
+  profile:
+    displayName: ACME Retail Group
+    email: acme-group@acme-shop.example
+  children:
+  - digital-commerce
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: digital-commerce
+  description: Everything behind the ACME online shop.
+spec:
+  type: business-unit
+  profile:
+    displayName: Digital Commerce
+    email: digital-commerce@acme-shop.example
+  parent: acme-group
+  children:
+  - customer-experience
+  - order-fulfilment
+  - finance-technology
+  - platform-engineering
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: order-fulfilment
+  description: Checkout, warehouse, delivery and logistics pricing.
+spec:
+  type: department
+  profile:
+    displayName: Order Fulfilment
+    email: order-fulfilment@acme-shop.example
+  parent: digital-commerce
+  children:
+  - checkout-team
+  - fulfilment-team
+  - logistics-pricing-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: fulfilment-team
+  description: Warehouse picking, packing and parcel delivery.
+spec:
+  type: team
+  profile:
+    displayName: Fulfilment Team
+    email: fulfilment-team@acme-shop.example
+  parent: order-fulfilment
+  children: []

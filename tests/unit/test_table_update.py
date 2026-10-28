@@ -299,41 +299,20 @@ def test_handler(lambda_module, context, order,
         ddb_record_new, ddb_record_in_progress, ddb_record_failed, ddb_record_completed, ddb_record_in_progress_removed
     ]}
 
-    # Prepare stub
-    expected_params = {"Entries": [
-        {
-            "Time": stub.ANY,
-            "Source": "ecommerce.delivery",
-            "Resources": [order["orderId"]],
-            "DetailType": "DeliveryFailed",
-            "Detail": json.dumps({
-                k: order[k] for k in ["orderId", "address"]
-            }),
-            "EventBusName": "EVENT_BUS_NAME"
-        },
-        {
-            "Time": stub.ANY,
-            "Source": "ecommerce.delivery",
-            "Resources": [order["orderId"]],
-            "DetailType": "DeliveryCompleted",
-            "Detail": json.dumps({
-                k: order[k] for k in ["orderId", "address"]
-            }),
-            "EventBusName": "EVENT_BUS_NAME"
-        },
-        {
-            "Time": stub.ANY,
-            "Source": "ecommerce.delivery",
-            "Resources": [order["orderId"]],
-            "DetailType": "DeliveryFailed",
-            "Detail": json.dumps({
-                k: order[k] for k in ["orderId", "address"]
-            }),
-            "EventBusName": "EVENT_BUS_NAME"
-        }
-    ]}
+    # Prepare stub: one PutEvents call per event
     eventbridge = stub.Stubber(lambda_module.eventbridge)
-    eventbridge.add_response("put_events", {}, expected_params)
+    for detail_type in ["DeliveryFailed", "DeliveryCompleted", "DeliveryFailed"]:
+        expected_params = {"Entries": [{
+            "Time": stub.ANY,
+            "Source": "ecommerce.delivery",
+            "Resources": [order["orderId"]],
+            "DetailType": detail_type,
+            "Detail": json.dumps({
+                k: order[k] for k in ["orderId", "address"]
+            }),
+            "EventBusName": "EVENT_BUS_NAME"
+        }]}
+        eventbridge.add_response("put_events", {}, expected_params)
     eventbridge.activate()
 
     lambda_module.handler(event, context)
